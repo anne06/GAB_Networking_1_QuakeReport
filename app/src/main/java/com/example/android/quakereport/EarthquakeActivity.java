@@ -17,10 +17,12 @@ package com.example.android.quakereport;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ArrayAdapter;
+import android.util.Log;
 import android.widget.ListView;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class EarthquakeActivity extends AppCompatActivity {
 
@@ -32,24 +34,27 @@ public class EarthquakeActivity extends AppCompatActivity {
         setContentView(R.layout.earthquake_activity);
 
         // Create a fake list of earthquake locations.
-        ArrayList<String> earthquakes = new ArrayList<>();
-        earthquakes.add("San Francisco");
-        earthquakes.add("London");
-        earthquakes.add("Tokyo");
-        earthquakes.add("Mexico City");
-        earthquakes.add("Moscow");
-        earthquakes.add("Rio de Janeiro");
-        earthquakes.add("Paris");
+        List<Earthquake> earthquakes = new ArrayList<>();
+        earthquakes.add(new Earthquake(7.2f,"San Francisco", LocalDate.of(2016,2,2)));
+        earthquakes.add(new Earthquake(6.1f,"London", LocalDate.of(2015,7,20)));
+        earthquakes.add(new Earthquake(3.9f,"Tokyo", LocalDate.of(2014,11,10)));
+        earthquakes.add(new Earthquake(5.4f,"Mexico City", LocalDate.of(2014,5,3)));
+        earthquakes.add(new Earthquake(2.8f,"Moscow", LocalDate.of(2013,1,2)));
+        earthquakes.add(new Earthquake(4.9f,"Rio de Janeiro", LocalDate.of(2012,8,19)));
+        earthquakes.add(new Earthquake(1.6f,"Paris", LocalDate.of(2011,10,30)));
 
         // Find a reference to the {@link ListView} in the layout
-        ListView earthquakeListView = (ListView) findViewById(R.id.list);
+        ListView earthquakeListView = (ListView) findViewById(R.id.listEarthquake);
 
         // Create a new {@link ArrayAdapter} of earthquakes
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_list_item_1, earthquakes);
+        EarthquakeAdapter adapter = new EarthquakeAdapter(this, earthquakes);
 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(adapter);
+
+        for (Earthquake event: earthquakes) {
+            Log.d(LOG_TAG, event.toString());
+        }
     }
 }
