@@ -1,21 +1,21 @@
 package com.example.android.quakereport;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
+import java.text.SimpleDateFormat;
 
 public class Earthquake {
-    private float magnitude;
+    private double magnitude;
     private String location;
-    private LocalDate eventDate;
+    private long mTimeInMilliseconds;
+    private String webSiteUrl;
 
-    public Earthquake(float magnitude, String location, LocalDate eventDate) {
+    public Earthquake(double magnitude, String location, long eventDate, String webSiteUrl) {
         this.magnitude = magnitude;
         this.location = location;
-        this.eventDate = eventDate;
+        this.mTimeInMilliseconds = eventDate;
+        this.webSiteUrl = webSiteUrl;
     }
 
-    public float getMagnitude() {
+    public double getMagnitude() {
         return magnitude;
     }
 
@@ -23,16 +23,24 @@ public class Earthquake {
         return location;
     }
 
-    public LocalDate getEventDate() {
-        return eventDate;
+    public long getTimeInMilliseconds() { return mTimeInMilliseconds;}
+
+    public String getWebSiteUrl() { return webSiteUrl; }
+
+    public String  getTime() {
+        // HH:mm AM
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("H:mm a");
+        return dateFormatter.format(mTimeInMilliseconds);
     }
 
-    public String getStringEventDate() {
-       return eventDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
+    public String getDate() {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM DD, yyy");
+        return dateFormatter.format(mTimeInMilliseconds);
     }
 
     @Override
     public String toString(){
-        return getMagnitude() + " - " + getLocation() + " - " + getStringEventDate();
+        return getMagnitude() + " - " + getLocation() + " - " +
+                getDate() + " - " + getTime() + "\n" + getWebSiteUrl();
     }
 }
