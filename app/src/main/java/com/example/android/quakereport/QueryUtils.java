@@ -6,6 +6,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,22 +49,111 @@ public final class QueryUtils {
      * Return a list of {@link Earthquake} objects that has been built up from
      * parsing a JSON response.
      */
-    public static List<Earthquake> extractEarthquakes() {
+    public static List<Earthquake> extractEarthquakes(String webQuery) {
 
         // Create an empty ArrayList that we can start adding earthquakes to
         List<Earthquake> earthquakes = new ArrayList<>();
 
-        // Try to parse the SAMPLE_JSON_RESPONSE. If there's a problem with the way the JSON
+        // The first step is to create an url
+        URL url = createURL(webQuery);
+        String jsonResponse = readURL(url);
+
+       earthquakes = parseJSON(jsonResponse);
+
+
+        // Return the list of earthquakes
+        return earthquakes;
+
+    }
+
+    private static URL createURL(String webSiteURL){
+
+        URL url;
+        try {
+            url = new URL(webSiteURL);
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG, "Incorrect URL format: " + webSiteURL);
+            return null;
+        }
+
+        return url;
+    }
+
+    private static String readURL(URL url){
+
+        if (url == null)
+            return null;
+
+        HttpURLConnection HttpUrlConnection = null;
+        InputStream inputStream = null;
+        String jsonResponse = null;
+
+        try {
+            // Establishment of the HTTP connection on the webserver
+            HttpUrlConnection = (HttpURLConnection) url.openConnection();
+            HttpUrlConnection.setReadTimeout(10000 /* milliseconds */);
+            HttpUrlConnection.setConnectTimeout(15000 /* milliseconds */);
+            HttpUrlConnection.setRequestMethod("GET");
+            HttpUrlConnection.connect();
+
+            // If the request was successful (response code 200),
+            // then read the input stream and parse the response.
+            if (HttpUrlConnection.getResponseCode() == 200) {
+                inputStream = HttpUrlConnection.getInputStream();
+                jsonResponse = readFromStream(inputStream);
+            } else {
+                Log.e(LOG_TAG, "Error response code: " + HttpUrlConnection.getResponseCode());
+            }
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e);
+        } finally {
+            if (HttpUrlConnection != null) {
+                HttpUrlConnection.disconnect();
+            }
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+        return jsonResponse;
+    }
+
+    private static String readFromStream(InputStream inputStream){
+        if (inputStream == null)
+            return null;
+
+        StringBuilder jsonResponse = new StringBuilder();
+        if (inputStream != null) {
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+            BufferedReader reader = new BufferedReader(inputStreamReader);
+            try {
+                String line = reader.readLine();
+                while (line != null) {
+                    jsonResponse.append(line);
+                    line = reader.readLine();
+                }
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Error in network reading" + e);
+                return null;
+            }
+        }
+        return jsonResponse.toString();
+    }
+
+    private static List<Earthquake> parseJSON(String jsonResponse) {
+        List<Earthquake> allEarthquakes = new ArrayList();
+
+        // Try to parse the jsonResponse. If there's a problem with the way the JSON
         // is formatted, a JSONException exception object will be thrown.
         // Catch the exception so the app doesn't crash, and print the error message to the logs.
         try {
 
-            // TODO: Parse the response given by the SAMPLE_JSON_RESPONSE string and
-            // build up a list of Earthquake objects with the corresponding data.
-
-            if (SAMPLE_JSON_RESPONSE != null) {
+            if (jsonResponse != null) {
                 // Creation of the ROOT JSON object
-                JSONObject baseJsonResponse = new JSONObject(SAMPLE_JSON_RESPONSE);
+                JSONObject baseJsonResponse = new JSONObject(jsonResponse);
 
                 // Creation of the "features" JSON array
                 JSONArray earthquakeArray = baseJsonResponse.getJSONArray("features");
@@ -76,7 +173,7 @@ public final class QueryUtils {
                     Log.e(LOG_TAG, "TimeStamp: " + time);
 
                     Earthquake earthquake = new Earthquake(magnitude, location, time, url);
-                    earthquakes.add(earthquake);
+                    allEarthquakes.add(earthquake);
                 }
 
 
@@ -89,9 +186,6 @@ public final class QueryUtils {
             // with the message from the exception.
             Log.e(LOG_TAG, "Problem parsing the earthquake JSON results", e);
         }
-
-        // Return the list of earthquakes
-        return earthquakes;
+        return allEarthquakes;
     }
-
 }
