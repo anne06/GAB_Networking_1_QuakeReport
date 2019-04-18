@@ -66,30 +66,30 @@ public final class QueryUtils {
         if (url == null)
             return jsonResponse;
 
-        HttpURLConnection HttpUrlConnection = null;
+        HttpURLConnection httpURLConnection = null;
         InputStream inputStream = null;
 
         try {
             // Establishment of the HTTP connection on the webserver
-            HttpUrlConnection = (HttpURLConnection) url.openConnection();
-            HttpUrlConnection.setReadTimeout(10000 /* milliseconds */);
-            HttpUrlConnection.setConnectTimeout(15000 /* milliseconds */);
-            HttpUrlConnection.setRequestMethod("GET");
-            HttpUrlConnection.connect();
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setReadTimeout(10000 /* milliseconds */);
+            httpURLConnection.setConnectTimeout(15000 /* milliseconds */);
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.connect();
 
             // If the request was successful (response code 200),
             // then read the input stream and parse the response.
-            if (HttpUrlConnection.getResponseCode() == 200) {
-                inputStream = HttpUrlConnection.getInputStream();
+            if (httpURLConnection.getResponseCode() == 200) {
+                inputStream = httpURLConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
             } else {
-                Log.e(LOG_TAG, "Error response code: " + HttpUrlConnection.getResponseCode());
+                Log.e(LOG_TAG, "Error response code: " + httpURLConnection.getResponseCode());
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e);
         } finally {
-            if (HttpUrlConnection != null) {
-                HttpUrlConnection.disconnect();
+            if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
             }
             if (inputStream != null) {
                 try {

@@ -18,7 +18,6 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
     private final static String LOG_TAG = EarthquakeAdapter.class.getSimpleName();
     private static final String LOCATION_SEPARATOR = " of ";
 
-
     public EarthquakeAdapter(@NonNull Context context, @NonNull List<Earthquake> objects) {
         super(context, 0, objects);
     }
@@ -79,7 +78,7 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         }
 
         TextView eventDate_TV = (TextView) listItem.findViewById(R.id.date);
-        eventDate_TV.setText( currentEarthquake.getDate());
+        eventDate_TV.setText(currentEarthquake.getDate());
 
         TextView eventTime_TV = (TextView) listItem.findViewById(R.id.time);
         eventTime_TV.setText( currentEarthquake.getTime());
