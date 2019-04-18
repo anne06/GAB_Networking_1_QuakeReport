@@ -33,7 +33,9 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         // elle contient donc tous les elements du xml (les 3 TextViews)
         if(listItem == null)
             listItem = LayoutInflater.from(getContext()).
-                    inflate(R.layout.earthquake_list_item, parent,false);
+                    inflate(R.layout.earthquake_list_item, null,false);
+        //inflate(R.layout.earthquake_list_item, parent,false);
+
 
         // On recupere les infos "objet" stockees sur cette ligne
         final Earthquake currentEarthquake = getItem(position);

@@ -21,9 +21,11 @@ import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +48,16 @@ public class EarthquakeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
+        Log.e(LOG_TAG, "TEST: onCreate()");
+
         // How to handle the adapter
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.listEarthquake);
+        earthquakeListView.setEmptyView(findViewById(R.id.emptyListTextView));
 
         // Create a new adapter that takes an empty list of earthquakes as input
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
+
 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
@@ -88,11 +94,15 @@ public class EarthquakeActivity extends AppCompatActivity
 
     @Override
     public Loader<List<Earthquake>> onCreateLoader(int i, Bundle bundle) {
+        Log.e(LOG_TAG, "TEST: onCreateLoader()");
+
         return new EarthquakeLoader(this, QUERY);
     }
 
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+        Log.e(LOG_TAG, "TEST: onLoadFinished()");
+
         // Clear the adapter of previous earthquake data
         mAdapter.clear();
 
@@ -101,11 +111,17 @@ public class EarthquakeActivity extends AppCompatActivity
         // data set. This will trigger the ListView to update.
         if (earthquakes != null && !earthquakes.isEmpty()) {
             mAdapter.addAll(earthquakes);
+        } else {
+            TextView emptyListTV = (TextView) findViewById(R.id.emptyListTextView);
+            emptyListTV.setText(getString(R.string.empty_list));
         }
+
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
+        Log.e(LOG_TAG, "TEST: onLoaderReset()");
+
         // Loader reset, so we can clear out our existing data.
         mAdapter.clear();
     }

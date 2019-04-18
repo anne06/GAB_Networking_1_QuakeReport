@@ -37,6 +37,7 @@ public final class QueryUtils {
      * parsing a JSON response.
      */
     public static List<Earthquake> extractEarthquakes(String webQuery) {
+        Log.e(LOG_TAG, "TEST: extractEarthquakes()");
 
         // The first step is to create an url
         URL url = createURL(webQuery);
