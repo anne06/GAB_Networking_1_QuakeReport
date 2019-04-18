@@ -106,6 +106,9 @@ public class EarthquakeActivity extends AppCompatActivity
         // Clear the adapter of previous earthquake data
         mAdapter.clear();
 
+        // Hide the loading indicator
+        (findViewById(R.id.loading_indicator)).setVisibility(View.GONE);
+
 
         // If there is a valid list of {@link Earthquake}s, then add them to the adapter's
         // data set. This will trigger the ListView to update.

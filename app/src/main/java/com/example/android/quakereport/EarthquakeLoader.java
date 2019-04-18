@@ -29,6 +29,17 @@ public class EarthquakeLoader extends AsyncTaskLoader<List<Earthquake>> {
     public List<Earthquake> loadInBackground() {
         Log.e(LOG_TAG, "TEST: loadInBackgroung()");
 
+        /* Used to test the loading indicator
+        try
+        {
+            Thread.sleep(3000);
+        }
+        catch(InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+        }
+        */
+
         if (mWebsite == null || mWebsite.length() < 1)
             return null;
 
