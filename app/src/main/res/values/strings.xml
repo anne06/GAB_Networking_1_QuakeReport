@@ -17,4 +17,5 @@
     <string name="app_name">Quake Report</string>
     <string name="near_the">Near the</string>
     <string name="empty_list">"There is no Earthquake yet !</string>
+    <string name="no_Internet_Connectivity">No Internet connection.</string>
 </resources>
